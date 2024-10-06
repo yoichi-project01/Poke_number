@@ -3,10 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポケモン図鑑番号当てゲーム</title>
+    <title>ランダム行抽出</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-    <h1>ポケモン図鑑番号当てゲーム</h1>
-    <p>ポケモンの図鑑番号を当てるゲームです。</p>
+    <h1>Excelファイルからランダム行を取得</h1>
+    <button onclick="loadExcelFile()">Excelファイルを読み込む</button>
+    <button onclick="getRandomRow()">ランダム行を表示</button>
+    
+    <div id="output"></div>
+
+    <script>
+        let workbook;  // 読み込まれたExcelのデータを保持
+
+        // Excelファイルをサーバーから読み込む関数
+        function loadExcelFile() {
+            const url = 'pokemon_data.xlsx';  // Excelファイルのパス（サーバーに配置）
+
+            fetch(url)
+                .then(response => response.arrayBuffer())
+                .then(data => {
+                    workbook = XLSX.read(data, { type: 'array' });
+                    alert('ファイルが読み込まれました');
+                })
+                .catch(error => {
+                    console.error('ファイルの読み込みに失敗しました', error);
+                    alert('ファイルの読み込みに失敗しました');
+                });
+        }
+
+        // ランダムな行を取得して表示する関数
+        function getRandomRow() {
+            if (!workbook) {
+                alert('まずExcelファイルを読み込んでください');
+                return;
+            }
+
+            const sheetName = workbook.SheetNames[0];  // 最初のシートを使用
+            const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });  // シートのデータを取得
+
+            if (sheet.length <= 1) {
+                alert('シートにデータがありません');
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * (sheet.length - 1)) + 1;  // ヘッダーを除くランダムな行を選択
+            const randomRow = sheet[randomIndex];  // ランダム行のデータ
+
+            // A列、B列、C列のデータを取得
+            const aValue = randomRow[0] || '';
+            const bValue = randomRow[1] || '';
+            const cValue = randomRow[2] || '';
+
+            // HTMLテーブル形式で表示
+            const htmlData = `
+            <table border="1">
+                <tr>
+                    <th>A列</th>
+                    <th>B列</th>
+                    <th>C列</th>
+                </tr>
+                <tr>
+                    <td>${aValue}</td>
+                    <td>${bValue}</td>
+                    <td>${cValue}</td>
+                </tr>
+            </table>`;
+
+            document.getElementById('output').innerHTML = htmlData;  // 結果を表示
+        }
+    </script>
 </body>
 </html>
