@@ -14,6 +14,8 @@
             height: auto;
         }
     </style>
+    <!-- SweetAlert2のCDNを追加 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <h1>ポケモン番号クイズ</h1>
@@ -40,6 +42,7 @@
         let remainingPoints = 1000;  // 初期ポイント
         let timeLimit = 15;  // 制限時間（秒）
         let timer;  // タイマーを格納する変数
+        let correctAnswers = 0;  // 正解した問題数をカウント
 
         // JSONファイルをfetchで読み込む
         function loadPokemonData() {
@@ -127,6 +130,7 @@
             if (inputNumber === selectedPokemonNumber) {
                 resultMessage.innerText = '正解！';
                 resultMessage.style.color = 'green';
+                correctAnswers++;  // 正解数をカウント
             } else {
                 resultMessage.innerText = `不正解… ポイントが ${difference} 減少しました。`;
                 resultMessage.style.color = 'red';
@@ -151,6 +155,14 @@
             document.getElementById('gameOverMessage').innerText = 'ゲームオーバー！';
             document.getElementById('checkAnswer').disabled = true;  // チェックボタンを無効化
             document.getElementById('userInput').disabled = true;  // 入力欄を無効化
+
+            // SweetAlert2で結果を表示
+            Swal.fire({
+                title: 'ゲームオーバー！',
+                text: `あなたは${correctAnswers}問正解しました。`,
+                icon: 'info',
+                confirmButtonText: 'OK'
+            });
         }
 
         // ページロード時に最初のポケモンを表示
