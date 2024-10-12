@@ -3,75 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ランダム行抽出</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <title>ポケモン番号クイズ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        img {
+            width: 200px;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
-    <h1>Excelファイルからランダム行を取得</h1>
-    <button onclick="loadExcelFile()">Excelファイルを読み込む</button>
-    <button onclick="getRandomRow()">ランダム行を表示</button>
+    <h1>ポケモン番号クイズ</h1>
+    <div id="pokemonInfo">
+        <h2 id="pokemonName"></h2>   <!-- ポケモンの名前 -->
+        <img id="pokemonImage" src="" alt="ポケモン画像" width="200">
+    </div>
     
-    <div id="output"></div>
+    <div>
+        <p>このポケモンの番号は？</p>
+        <input type="number" id="userInput" placeholder="番号を入力">
+        <button id="checkAnswer">チェック</button>
+        <p id="resultMessage"></p>  <!-- 結果を表示する場所 -->
+    </div>
+
+    <div>
+        <h3>残りポイント: <span id="remainingPoints">1000</span></h3> <!-- 残りポイント -->
+        <h3>残り時間: <span id="timeLeft">15</span>秒</h3> <!-- 残り時間 -->
+        <p id="gameOverMessage" style="color: red;"></p> <!-- ゲームオーバーメッセージ -->
+    </div>
 
     <script>
-        let workbook;  // 読み込まれたExcelのデータを保持
+        let selectedPokemonNumber = null;  // 選ばれたポケモンの番号を保持
+        let remainingPoints = 1000;  // 初期ポイント
+        let timeLimit = 15;  // 制限時間（秒）
+        let timer;  // タイマーを格納する変数
 
-        // Excelファイルをサーバーから読み込む関数
-        function loadExcelFile() {
-            const url = 'pokemon_data.xlsx';  // Excelファイルのパス（サーバーに配置）
-
-            fetch(url)
-                .then(response => response.arrayBuffer())
+        // JSONファイルをfetchで読み込む
+        function loadPokemonData() {
+            return fetch('../js/pokemon_data.json')  // JSONファイルを指定
+                .then(response => response.json())  // JSONデータとして処理
                 .then(data => {
-                    workbook = XLSX.read(data, { type: 'array' });
-                    alert('ファイルが読み込まれました');
+                    return data;  // データを返す
                 })
                 .catch(error => {
-                    console.error('ファイルの読み込みに失敗しました', error);
-                    alert('ファイルの読み込みに失敗しました');
+                    console.error("データの読み込みに失敗しました:", error);
                 });
         }
 
-        // ランダムな行を取得して表示する関数
-        function getRandomRow() {
-            if (!workbook) {
-                alert('まずExcelファイルを読み込んでください');
-                return;
-            }
+        // タイマーを開始する関数
+        function startTimer() {
+            let timeLeft = timeLimit;
+            document.getElementById('timeLeft').innerText = timeLeft;
 
-            const sheetName = workbook.SheetNames[0];  // 最初のシートを使用
-            const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });  // シートのデータを取得
+            timer = setInterval(function() {
+                timeLeft--;
+                document.getElementById('timeLeft').innerText = timeLeft;
 
-            if (sheet.length <= 1) {
-                alert('シートにデータがありません');
-                return;
-            }
-
-            const randomIndex = Math.floor(Math.random() * (sheet.length - 1)) + 1;  // ヘッダーを除くランダムな行を選択
-            const randomRow = sheet[randomIndex];  // ランダム行のデータ
-
-            // A列、B列、C列のデータを取得
-            const aValue = randomRow[0] || '';
-            const bValue = randomRow[1] || '';
-            const cValue = randomRow[2] || '';
-
-            // HTMLテーブル形式で表示
-            const htmlData = `
-            <table border="1">
-                <tr>
-                    <th>A列</th>
-                    <th>B列</th>
-                    <th>C列</th>
-                </tr>
-                <tr>
-                    <td>${aValue}</td>
-                    <td>${bValue}</td>
-                    <td>${cValue}</td>
-                </tr>
-            </table>`;
-
-            document.getElementById('output').innerHTML = htmlData;  // 結果を表示
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timeOut();  // 時間切れ時の処理
+                }
+            }, 1000);  // 1秒ごとにカウントダウン
         }
+
+        // 時間切れ時の処理
+        function timeOut() {
+            const resultMessage = document.getElementById('resultMessage');
+            resultMessage.innerText = '時間切れ！';
+            resultMessage.style.color = 'red';
+
+            // ゲームオーバー処理を追加
+            endGame();
+        }
+
+        // ランダムなポケモンを表示する関数
+        function displayRandomPokemon(pokemonData) {
+            const randomIndex = Math.floor(Math.random() * pokemonData.length);
+            const selectedPokemon = pokemonData[randomIndex];
+
+            // 選ばれたポケモンの番号を保持
+            selectedPokemonNumber = selectedPokemon['番号'];
+
+            // 名前と画像を表示
+            document.getElementById('pokemonName').innerText = selectedPokemon['名前'];
+            document.getElementById('pokemonImage').src = selectedPokemon['画像'];
+
+            // 結果メッセージをクリア
+            document.getElementById('resultMessage').innerText = '';
+            document.getElementById('userInput').value = '';  // 入力欄をリセット
+
+            // タイマーをリセットして開始
+            clearInterval(timer);
+            startTimer();
+        }
+
+        // ユーザーの入力をチェックする関数
+        function checkAnswer() {
+            clearInterval(timer);  // タイマーを停止
+            const userInput = document.getElementById('userInput').value;
+            const resultMessage = document.getElementById('resultMessage');
+
+            if (userInput == "") {
+                resultMessage.innerText = '番号を入力してください。';
+                resultMessage.style.color = 'red';
+                startTimer();  // タイマーを再開
+                return;
+            }
+
+            const inputNumber = parseInt(userInput);
+            const difference = Math.abs(inputNumber - selectedPokemonNumber);  // 入力と正解の番号の差
+
+            // ポイントを差し引く
+            remainingPoints -= difference;
+            if (remainingPoints < 0) remainingPoints = 0;
+
+            // ポイント表示を更新
+            document.getElementById('remainingPoints').innerText = remainingPoints;
+
+            // 正解/不正解の判定
+            if (inputNumber === selectedPokemonNumber) {
+                resultMessage.innerText = '正解！';
+                resultMessage.style.color = 'green';
+            } else {
+                resultMessage.innerText = `不正解… ポイントが ${difference} 減少しました。`;
+                resultMessage.style.color = 'red';
+            }
+
+            // ポイントが0になったらゲームオーバー
+            if (remainingPoints <= 0) {
+                endGame();
+            } else {
+                // 次のポケモンに自動で進む（2秒後）
+                setTimeout(function() {
+                    loadPokemonData().then(pokemonData => {
+                        displayRandomPokemon(pokemonData);
+                    });
+                }, 2000);  // 2秒後に次のポケモンを表示
+            }
+        }
+
+        // ゲームオーバー処理
+        function endGame() {
+            clearInterval(timer);  // タイマーをクリア
+            document.getElementById('gameOverMessage').innerText = 'ゲームオーバー！';
+            document.getElementById('checkAnswer').disabled = true;  // チェックボタンを無効化
+            document.getElementById('userInput').disabled = true;  // 入力欄を無効化
+        }
+
+        // ページロード時に最初のポケモンを表示
+        window.onload = function() {
+            loadPokemonData().then(pokemonData => {
+                displayRandomPokemon(pokemonData);
+            });
+        };
+
+        // チェックボタンでユーザーの答えを確認
+        document.getElementById('checkAnswer').addEventListener('click', checkAnswer);
+
+        // エンターキーでチェックを実行
+        document.getElementById('userInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
     </script>
 </body>
 </html>
