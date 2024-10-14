@@ -44,6 +44,18 @@
         let timer;  // タイマーを格納する変数
         let correctAnswers = 0;  // 正解した問題数をカウント
 
+        // 右クリックを無効化
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+        
+            // F12キーを無効化
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                    e.preventDefault();
+                }
+            });
+
         // JSONファイルをfetchで読み込む
         function loadPokemonData() {
             return fetch('../js/pokemon_data.json')  // JSONファイルを指定
