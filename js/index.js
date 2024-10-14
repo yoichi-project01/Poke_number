@@ -135,7 +135,7 @@ function endGame() {
     // 結果を表示
     Swal.fire({
         title: 'ゲームオーバー！',
-        text: `あなたは${correctAnswers}問耐えましました。`,
+        text: `${correctAnswers}問耐えた！`,
         icon: 'info',
         confirmButtonText: 'リトライ',
         allowEnterKey: false, // エンターキーで閉じられないように設定
