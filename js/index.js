@@ -111,19 +111,18 @@ function checkAnswer() {
     } else {
         resultMessage.innerText = `不正解… ポイントが ${difference} 減少しました。`;
         resultMessage.style.color = 'red';
+        // ポイントが0になったらゲームオーバー
+        if (remainingPoints == 0) {
+            endGame();
+        } else {
+            // 次のポケモンに自動で進む（2秒後）
+            setTimeout(function() {
+                loadPokemonData().then(pokemonData => {
+                    displayRandomPokemon(pokemonData);
+                });
+            }, 2000);  // 2秒後に次のポケモンを表示
+        }
         correctAnswers++;  // 問題数をカウント
-    }
-
-    // ポイントが0になったらゲームオーバー
-    if (remainingPoints == 0) {
-        endGame();
-    } else {
-        // 次のポケモンに自動で進む（2秒後）
-        setTimeout(function() {
-            loadPokemonData().then(pokemonData => {
-                displayRandomPokemon(pokemonData);
-            });
-        }, 2000);  // 2秒後に次のポケモンを表示
     }
 }
 
