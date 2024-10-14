@@ -58,27 +58,42 @@ function displayRandomPokemon(pokemonData) {
 
     // 結果メッセージをクリア
     document.getElementById('resultMessage').innerText = '';
-    document.getElementById('userInput').value = '';  // 入力欄をリセット
+    document.getElementById('inputnuber').value = '';  // 入力欄をリセット
 
     // タイマーをリセットして開始
     clearInterval(timer);
     startTimer();
 }
 
+// ゲームをリセットする関数
+function resetGame() {
+    remainingPoints = 1000;  // ポイントを初期化
+    correctAnswers = 0;  // 問題数を初期化
+    document.getElementById('remainingPoints').innerText = remainingPoints;  // ポイント表示をリセット
+    document.getElementById('resultMessage').innerText = '';  // ゲームオーバーメッセージを消す
+    document.getElementById('checkAnswer').disabled = false;  // チェックボタンを有効化
+    document.getElementById('inputnuber').disabled = false;  // 入力欄を有効化
+
+    // 次のポケモンを表示
+    loadPokemonData().then(pokemonData => {
+        displayRandomPokemon(pokemonData);
+    });
+}
+
 // ユーザーの入力をチェックする関数
 function checkAnswer() {
     clearInterval(timer);  // タイマーを停止
-    const userInput = document.getElementById('userInput').value;
+    const inputnuber = document.getElementById('inputnuber').value;
     const resultMessage = document.getElementById('resultMessage');
 
-    if (userInput == "") {
+    if (inputnuber == "") {
         resultMessage.innerText = '番号を入力してください。';
         resultMessage.style.color = 'red';
         startTimer();  // タイマーを再開
         return;
     }
 
-    const inputNumber = parseInt(userInput);
+    const inputNumber = parseInt(inputnuber);
     const difference = Math.abs(inputNumber - selectedPokemonNumber);  // 入力と正解の番号の差
 
     // ポイントを差し引く
@@ -92,14 +107,15 @@ function checkAnswer() {
     if (inputNumber === selectedPokemonNumber) {
         resultMessage.innerText = '正解！';
         resultMessage.style.color = 'green';
-        correctAnswers++;  // 正解数をカウント
+        correctAnswers++;  // 問題数をカウント
     } else {
         resultMessage.innerText = `不正解… ポイントが ${difference} 減少しました。`;
         resultMessage.style.color = 'red';
+        correctAnswers++;  // 問題数をカウント
     }
 
     // ポイントが0になったらゲームオーバー
-    if (remainingPoints <= 0) {
+    if (remainingPoints == 0) {
         endGame();
     } else {
         // 次のポケモンに自動で進む（2秒後）
@@ -115,14 +131,20 @@ function checkAnswer() {
 function endGame() {
     clearInterval(timer);  // タイマーをクリア
     document.getElementById('checkAnswer').disabled = true;  // チェックボタンを無効化
-    document.getElementById('userInput').disabled = true;  // 入力欄を無効化
+    document.getElementById('inputnuber').disabled = true;  // 入力欄を無効化
 
-    // SweetAlert2で結果を表示
+    // 結果を表示
     Swal.fire({
         title: 'ゲームオーバー！',
-        text: `あなたは${correctAnswers}問正解しました。`,
+        text: `あなたは${correctAnswers}問耐えましました。`,
         icon: 'info',
-        confirmButtonText: 'OK'
+        confirmButtonText: 'リトライ',
+        allowEnterKey: false, // エンターキーで閉じられないように設定
+        allowOutsideClick: false  // アラート外をクリックしても閉じないように設定
+    }).then((result) => {
+        if (result.isConfirmed) {
+            resetGame();  // リトライボタンを押したときにゲームをリセット
+        }
     });
 }
 
@@ -137,7 +159,7 @@ window.onload = function() {
 document.getElementById('checkAnswer').addEventListener('click', checkAnswer);
 
 // エンターキーでチェックを実行
-document.getElementById('userInput').addEventListener('keydown', function(event) {
+document.getElementById('inputnuber').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         checkAnswer();
     }
