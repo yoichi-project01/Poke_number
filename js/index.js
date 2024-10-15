@@ -107,6 +107,12 @@ function checkAnswer() {
     if (inputNumber === selectedPokemonNumber) {
         resultMessage.innerText = '正解！';
         resultMessage.style.color = 'green';
+        // 次のポケモンに自動で進む（2秒後）
+            setTimeout(function() {
+                loadPokemonData().then(pokemonData => {
+                    displayRandomPokemon(pokemonData);
+            });
+        }, 2000);  // 2秒後に次のポケモンを表示
         correctAnswers++;  // 問題数をカウント
     } else {
         resultMessage.innerText = `不正解… ポイントが ${difference} 減少しました。`;
