@@ -132,6 +132,13 @@ function checkAnswer() {
     }
 }
 
+// エンターキーでチェックを実行
+document.getElementById('inputnuber').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        checkAnswer();
+    }
+});
+
 // ゲームオーバー処理
 function endGame() {
     clearInterval(timer);  // タイマーをクリア
@@ -144,7 +151,6 @@ function endGame() {
         text: `${correctAnswers}問耐えた！`,
         icon: 'info',
         confirmButtonText: 'リトライ',
-        allowEnterKey: false, // エンターキーで閉じられないように設定
         allowOutsideClick: false  // アラート外をクリックしても閉じないように設定
     }).then((result) => {
         if (result.isConfirmed) {
@@ -162,10 +168,3 @@ window.onload = function() {
 
 // チェックボタンでユーザーの答えを確認
 document.getElementById('checkAnswer').addEventListener('click', checkAnswer);
-
-// エンターキーでチェックを実行
-document.getElementById('inputnuber').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        checkAnswer();
-    }
-});
