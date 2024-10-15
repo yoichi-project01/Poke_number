@@ -65,7 +65,7 @@ function displayRandomPokemon(pokemonData) {
 
 // ゲームをリセットする関数
 function resetGame() {
-    remainingPoints = 100;  // ポイントを初期化
+    remainingPoints = 1000;  // ポイントを初期化
     correctAnswers = 0;  // 正解数を初期化
     document.getElementById('remainingPoints').innerText = remainingPoints;  // ポイント表示をリセット
     document.getElementById('gameOverMessage').innerText = '';  // ゲームオーバーメッセージを消す
