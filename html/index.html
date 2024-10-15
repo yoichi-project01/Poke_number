@@ -20,30 +20,22 @@
 <body>
     <h1>ポケモン番号クイズ</h1>
     <div id="pokemonInfo">
-        
-        <!-- ポケモンの名前 -->
-        <h2 id="pokemonName"></h2>
-        
-        <img id="pokemonImage" src="" alt="ポケモン画像" width="200">
+        <h2 id="pokemonName"></h2>   <!-- ポケモンの名前 -->
+        <img src="" alt="ポケモン画像" id="pokemonImage" width="200">
     </div>
     
-    <div>
+    <!-- フォームの追加 -->
+    <form id="pokemonForm">
         <p>このポケモンの番号は？</p>
-        
-        <input type="number" id="inputnuber" placeholder="番号を入力">
-        
-        <button id="checkAnswer">回答</button>
-        
-        <!-- 結果を表示する場所 -->
-        <p id="resultMessage"></p>
-    </div>
+        <input type="text" id="userInput" placeholder="番号を入力">
+        <input type="submit" value="チェック">  <!-- inputタグでsubmitボタンを作成 -->
+        <p id="resultMessage"></p>  <!-- 結果を表示する場所 -->
+    </form>
 
     <div>
-        <!-- 残りポイント -->
-        <h3>残りポイント: <span id="remainingPoints">1000</span></h3>
-        
-        <!-- 残り時間 -->
-        <h3>残り時間: <span id="timeLeft">15</span>秒</h3>
+        <h3>残りポイント: <span id="remainingPoints">1000</span></h3> <!-- 残りポイント -->
+        <h3>残り時間: <span id="timeLeft">15</span>秒</h3> <!-- 残り時間 -->
+        <p id="gameOverMessage" style="color: red;"></p> <!-- ゲームオーバーメッセージ -->
     </div>
 
     <script src="../js/index.js"></script>
