@@ -104,8 +104,6 @@ function checkAnswer(event) {
     if (userInput == "") {
         resultMessage.innerText = '番号を入力してください。';
         resultMessage.style.color = 'red';
-        startTimer();  // タイマーを再開
-        return;
     }
 
     const inputNumber = parseInt(userInput);
