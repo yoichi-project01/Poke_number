@@ -108,7 +108,7 @@ function checkAnswer(event) {
 
     // 正解/不正解の判定
     if (inputNumber === selectedPokemonNumber) {
-        resultMessage.innerText = '正解！';
+        resultMessage.innerText = '正解！ 50ポイント追加！';
         resultMessage.style.color = 'green';
         // 次のポケモンに自動で進む（2秒後）
         setTimeout(function() {
@@ -117,8 +117,24 @@ function checkAnswer(event) {
             });
         }, 2000);  // 2秒後に次のポケモンを表示
         correctAnswers++;  // 問題数をカウント
-    } else {
-        resultMessage.innerText = `不正解… ポイントが ${difference} 減少しました。`;
+        remainingPoints += 50;  // 正解時に50ポイント追加
+    } else if (inputNumber < selectedPokemonNumber) {
+        resultMessage.innerText = `不正解… 誤差↑${difference}ポイント `;
+        resultMessage.style.color = 'red';
+        // ポイントが0になったらゲームオーバー
+        if (remainingPoints <= 0) {
+            endGame();  // ポイントが0になったら時間切れ時と同じ処理を実行
+        } else {
+            // 次のポケモンに自動で進む（2秒後）
+            setTimeout(function() {
+                loadPokemonData().then(pokemonData => {
+                    displayRandomPokemon(pokemonData);
+                });
+            }, 2000);  // 2秒後に次のポケモンを表示
+        }
+        correctAnswers++;  // 問題数をカウント
+    } else if (inputNumber > selectedPokemonNumber) {
+        resultMessage.innerText = `不正解… 誤差↓${difference}ポイント `;
         resultMessage.style.color = 'red';
         // ポイントが0になったらゲームオーバー
         if (remainingPoints <= 0) {
@@ -133,7 +149,6 @@ function checkAnswer(event) {
         }
         correctAnswers++;  // 問題数をカウント
     }
-
     // 入力フィールドとsubmitボタンを無効化する
     document.getElementById('userInput').disabled = true;
     document.querySelector('input[type="submit"]').disabled = true;
