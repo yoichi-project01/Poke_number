@@ -130,23 +130,8 @@ function checkAnswer(event) {
         }, 2000);  // 2秒後に次のポケモンを表示
         correctAnswers++;  // 問題数をカウント
         remainingPoints += 50;  // 正解時に50ポイント追加
-    } else if (inputNumber < selectedPokemonNumber) {
-        resultMessage.innerText = `不正解… ↑${difference}ポイント `;
-        resultMessage.style.color = 'red';
-        // ポイントが0になったらゲームオーバー
-        if (remainingPoints <= 0) {
-            endGame();  // ポイントが0になったら時間切れ時と同じ処理を実行
-        } else {
-            // 次のポケモンに自動で進む（2秒後）
-            setTimeout(function() {
-                loadPokemonData().then(pokemonData => {
-                    displayRandomPokemon(pokemonData);
-                });
-            }, 2000);  // 2秒後に次のポケモンを表示
-        }
-        correctAnswers++;  // 問題数をカウント
-    } else if (inputNumber > selectedPokemonNumber) {
-        resultMessage.innerText = `不正解… ↓${difference}ポイント `;
+    } else {
+        resultMessage.innerText = `不正解… 正解は${selectedPokemonNumber}番！`;
         resultMessage.style.color = 'red';
         // ポイントが0になったらゲームオーバー
         if (remainingPoints <= 0) {
