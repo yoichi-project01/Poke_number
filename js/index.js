@@ -2,7 +2,7 @@ let selectedPokemonNumber = null;  // 選ばれたポケモンの番号を保持
 let remainingPoints = 1000;  // 初期ポイント
 let timeLimit = 15;  // 制限時間（秒）
 let timer;  // タイマーを格納する変数
-let correctAnswers = 0;  // 正解した問題数をカウント
+let correctAnswers = 0;  // 耐えた問題数をカウント
 
 // 右クリックを無効化
 document.addEventListener('contextmenu', function(e) {
@@ -127,6 +127,7 @@ function checkAnswer(event) {
             });
         }, 2000);  // 2秒後に次のポケモンを表示
         correctAnswers++;  // 問題数をカウント
+        document.getElementById('result').innerText = correctAnswers;  // 耐えた問題数を表示
     } else {
         resultMessage.innerText = `不正解… 正解は${selectedPokemonNumber}番！`;
         resultMessage.style.color = 'red';
@@ -144,6 +145,7 @@ function checkAnswer(event) {
             }, 2000);  // 2秒後に次のポケモンを表示
         }
         correctAnswers++;  // 問題数をカウント
+        document.getElementById('result').innerText = correctAnswers;  // 耐えた問題数を表示
     }
     // 入力フィールドとsubmitボタンを無効化する
     document.getElementById('userInput').disabled = true;
