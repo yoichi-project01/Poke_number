@@ -119,7 +119,7 @@ function checkAnswer(event) {
         correctAnswers++;  // 問題数をカウント
         remainingPoints += 50;  // 正解時に50ポイント追加
     } else if (inputNumber < selectedPokemonNumber) {
-        resultMessage.innerText = `不正解… 誤差↑${difference}ポイント `;
+        resultMessage.innerText = `不正解… ↑${difference}ポイント `;
         resultMessage.style.color = 'red';
         // ポイントが0になったらゲームオーバー
         if (remainingPoints <= 0) {
@@ -134,7 +134,7 @@ function checkAnswer(event) {
         }
         correctAnswers++;  // 問題数をカウント
     } else if (inputNumber > selectedPokemonNumber) {
-        resultMessage.innerText = `不正解… 誤差↓${difference}ポイント `;
+        resultMessage.innerText = `不正解… ↓${difference}ポイント `;
         resultMessage.style.color = 'red';
         // ポイントが0になったらゲームオーバー
         if (remainingPoints <= 0) {
@@ -164,7 +164,7 @@ function endGame() {
     Swal.fire({
         title: 'ゲームオーバー！',
         text: `あなたは${correctAnswers}問耐えた！`,
-        icon: 'info',
+        icon: 'error',
         confirmButtonText: 'リトライ',
         allowOutsideClick: false  // アラート外をクリックしても閉じないように設定
     }).then((result) => {
