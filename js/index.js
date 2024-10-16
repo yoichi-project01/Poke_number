@@ -58,6 +58,11 @@ function displayRandomPokemon(pokemonData) {
     document.getElementById('resultMessage').innerText = '';
     document.getElementById('userInput').value = '';  // 入力欄をリセット
 
+    // 再度入力を有効化
+    document.getElementById('userInput').disabled = false;
+    document.querySelector('input[type="submit"]').disabled = false;
+    document.getElementById('userInput').focus();  // テキストボックスにフォーカスを設定
+
     // タイマーをリセットして開始
     clearInterval(timer);
     startTimer();
@@ -128,6 +133,10 @@ function checkAnswer(event) {
         }
         correctAnswers++;  // 問題数をカウント
     }
+
+    // 入力フィールドとsubmitボタンを無効化する
+    document.getElementById('userInput').disabled = true;
+    document.querySelector('input[type="submit"]').disabled = true;
 }
 
 // ゲームオーバー処理
@@ -136,7 +145,7 @@ function endGame() {
     document.getElementById('gameOverMessage').innerText = 'ゲームオーバー！';
     document.getElementById('userInput').disabled = true;  // 入力欄を無効化
 
-    // SweetAlert2で結果を表示（エンターキーを無効化）
+    // アラートで結果を表示
     Swal.fire({
         title: 'ゲームオーバー！',
         text: `あなたは${correctAnswers}問耐えた！`,
