@@ -5,16 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ポケモン番号クイズ</title>
     <link rel="icon" href="../pokemon_images/favicon.svg" sizes="any" type="image/svg+xml">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        img {
-            width: 200px;
-            height: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/style.css">
     <!-- SweetAlert2のCDNを追加 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -28,7 +19,7 @@
     <!-- フォームの追加 -->
     <form id="pokemonForm">
         <p>このポケモンの番号は？</p>
-        <input type="number" id="userInput" max="1025" min="1" required>  <!-- inputタグで番号入力欄を作成（文字だけ入力1～1025） -->
+        <input type="number" class="no-spin" id="userInput" max="1025" min="1" required>  <!-- inputタグで番号入力欄を作成（文字だけ入力1～1025） -->
         <input type="submit" value="チェック" disabled>   <!--inputタグでsubmitボタンを作成 -->
         <p id="resultMessage"></p>  <!-- 結果を表示する場所 -->
     </form>
