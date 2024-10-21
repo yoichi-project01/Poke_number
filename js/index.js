@@ -1,5 +1,5 @@
 let selectedPokemonNumber = null;  // 選ばれたポケモンの番号を保持
-let remainingPoints = 1000;  // 初期ポイント
+let remainingPoints = null;  // 初期ポイント
 let timeLimit = 15;  // 制限時間（秒）
 let timer;  // タイマーを格納する変数
 let correctAnswers = 0;  // 正解した問題数をカウント
@@ -58,12 +58,21 @@ function displayRandomPokemon(pokemonData) {
 
     // 結果メッセージをクリア
     document.getElementById('resultMessage').innerText = '';
-    document.getElementById('userInput').value = '';  // 入力欄をリセット
 
-    // 再度入力を有効化
-    document.getElementById('userInput').disabled = false;
-    document.querySelector('input[type="submit"]').disabled = false;
-    document.getElementById('userInput').focus();  // テキストボックスにフォーカスを設定
+    // 難易度に応じて入力方式を変更
+    if (timeLimit === 20) {  // 簡単モード（4択）
+        document.getElementById('userInput').style.display = 'none';  // 通常の入力フィールドを非表示
+        document.querySelector('input[type="submit"]').style.display = 'none';  // 送信ボタンを非表示
+        document.getElementById('remainingPoints').parentElement.style.display = 'none';  // ポイントの表示を非表示
+        displayMultipleChoiceOptions(selectedPokemonNumber, pokemonData);  // 4択問題を表示
+    } else {
+        document.getElementById('userInput').style.display = '';  // 通常の入力フィールドを表示
+        document.querySelector('input[type="submit"]').style.display = '';  // 送信ボタンを表示
+        document.getElementById('userInput').value = '';  // 入力欄をリセット
+        document.getElementById('userInput').disabled = false;
+        document.querySelector('input[type="submit"]').disabled = false;
+        document.getElementById('userInput').focus();  // テキストボックスにフォーカス
+    }
 
     // タイマーをリセットして開始
     clearInterval(timer);
@@ -76,7 +85,7 @@ function chooseDifficulty() {
         title: '難易度を選んでください',
         input: 'radio',
         inputOptions: {
-            'easy': '簡単 (時間: 30秒, ポイント: 1500)',
+            'easy': '簡単 (四択問題, 時間: 20秒)',
             'medium': '普通 (時間: 15秒, ポイント: 1000)',
             'hard': '難しい (時間: 10秒, ポイント: 500)'
         },
@@ -90,7 +99,6 @@ function chooseDifficulty() {
             switch (result.value) {
                 case 'easy':
                     timeLimit = 20;
-                    remainingPoints = 1500;
                     break;
                 case 'medium':
                     timeLimit = 15;
@@ -105,6 +113,67 @@ function chooseDifficulty() {
         }
     });
 }
+
+// 4択の選択肢ボタンを生成する関数
+function displayMultipleChoiceOptions(correctNumber, pokemonData) {
+    // まず既存の選択肢を削除
+    const form = document.getElementById('pokemonForm');
+    const existingButtons = document.querySelectorAll('.choice-button');
+    existingButtons.forEach(button => button.remove());
+
+    // 正解を含めた4つの選択肢を用意
+    let options = [correctNumber];
+    while (options.length < 4) {
+        // 正解番号の±15の範囲でランダムな番号を生成
+        const randomOffset = Math.floor(Math.random() * 31) - 15;  // -15～15の範囲の乱数
+        const randomNumber = correctNumber + randomOffset;
+
+        // 番号がポケモンの範囲外にならないようにチェックし、重複を避ける
+        if (randomNumber > 0 && randomNumber <= pokemonData.length && !options.includes(randomNumber)) {
+            options.push(randomNumber);
+        }
+    }
+
+    // 選択肢をシャッフル
+    options = options.sort(() => Math.random() - 0.5);
+
+    // 4つの選択肢ボタンを生成
+    options.forEach(option => {
+        const button = document.createElement('button');
+        button.className = 'choice-button';
+        button.innerText = option;
+        button.addEventListener('click', () => {
+            checkMultipleChoiceAnswer(option, correctNumber);
+        });
+        form.appendChild(button);
+    });
+}
+
+// 4択問題の回答をチェックする関数
+function checkMultipleChoiceAnswer(selectedNumber, correctNumber) {
+    clearInterval(timer);  // タイマーを停止
+    const resultMessage = document.getElementById('resultMessage');
+
+    if (selectedNumber === correctNumber) {
+        resultMessage.innerText = '正解！ 50ポイント追加！';
+        resultMessage.style.color = 'green';
+        remainingPoints += 50;
+        correctAnswers++;  // 正解数をカウント
+    } else {
+        resultMessage.innerText = `不正解… 正解は${correctNumber}番！`;
+        resultMessage.style.color = 'red';
+    }
+
+    document.getElementById('remainingPoints').innerText = remainingPoints;
+
+    // 次の問題に進む
+    setTimeout(function() {
+        loadPokemonData().then(pokemonData => {
+            displayRandomPokemon(pokemonData);
+        });
+    }, 2000);
+}
+
 
 
 // ゲームをリセットする関数
@@ -195,6 +264,7 @@ function endGame() {
         }
     });
 }
+
 
 // ページロード時に最初のポケモンを表示し、テキストボックスにフォーカスを設定
 window.onload = function() {

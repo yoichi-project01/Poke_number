@@ -9,7 +9,41 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
 }
+
 img {
     width: 200px;
     height: auto;
+}
+
+/* 選択肢ボタンのスタイル */
+.choice-button {
+    background-color: #f0f0f0; /* ボタンの背景色 */
+    border: 2px solid #ccc; /* ボタンの境界線 */
+    border-radius: 10px; /* 角を丸くする */
+    padding: 10px 20px; /* ボタンの内側余白 */
+    margin: 10px; /* ボタンの外側余白 */
+    font-size: 16px; /* 文字の大きさ */
+    cursor: pointer; /* カーソルをポインターに変更 */
+    transition: background-color 0.3s, transform 0.3s; /* ホバー時のアニメーション */
+    display: inline-block; /* ボタンを横並びにする */
+}
+
+/* ボタンのホバー時のスタイル */
+.choice-button:hover {
+    background-color: #e0e0e0; /* ホバー時に背景色を変更 */
+    transform: scale(1.05); /* ホバー時に少し拡大 */
+}
+
+/* ボタンをアクティブにしたとき（押した瞬間）のスタイル */
+.choice-button:active {
+    background-color: #ccc; /* 押したときに背景色を変更 */
+    transform: scale(0.98); /* 押したときに少し縮小 */
+}
+
+/* フォームを中央に配置 */
+#pokemonForm {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* ボタンが多い場合に折り返す */
+    margin-top: 20px;
 }
