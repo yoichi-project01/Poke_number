@@ -70,9 +70,45 @@ function displayRandomPokemon(pokemonData) {
     startTimer();
 }
 
+// 難易度選択のアラートを表示
+function chooseDifficulty() {
+    return Swal.fire({
+        title: '難易度を選んでください',
+        input: 'radio',
+        inputOptions: {
+            'easy': '簡単 (時間: 30秒, ポイント: 1500)',
+            'medium': '普通 (時間: 15秒, ポイント: 1000)',
+            'hard': '難しい (時間: 10秒, ポイント: 500)'
+        },
+        inputValidator: (value) => {
+            if (!value) {
+                return '難易度を選んでください！';
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            switch (result.value) {
+                case 'easy':
+                    timeLimit = 20;
+                    remainingPoints = 1500;
+                    break;
+                case 'medium':
+                    timeLimit = 15;
+                    remainingPoints = 1000;
+                    break;
+                case 'hard':
+                    timeLimit = 10;
+                    remainingPoints = 500;
+                    break;
+            }
+            resetGame();  // ゲームの初期化と開始
+        }
+    });
+}
+
+
 // ゲームをリセットする関数
 function resetGame() {
-    remainingPoints = 1000;  // ポイントを初期化
     correctAnswers = 0;  // 正解数を初期化
     document.getElementById('remainingPoints').innerText = remainingPoints;  // ポイント表示をリセット
     document.getElementById('resultMessage').innerText = '';  // ゲームオーバーメッセージを消す
@@ -162,6 +198,7 @@ function endGame() {
 
 // ページロード時に最初のポケモンを表示し、テキストボックスにフォーカスを設定
 window.onload = function() {
+    chooseDifficulty();  // 難易度選択を呼び出す
     loadPokemonData().then(pokemonData => {
         displayRandomPokemon(pokemonData);
         document.getElementById('userInput').focus();  // テキストボックスにフォーカス
