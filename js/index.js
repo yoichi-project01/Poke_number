@@ -60,7 +60,7 @@ function displayRandomPokemon(pokemonData) {
     document.getElementById('resultMessage').innerText = '';
 
     // 難易度に応じて入力方式を変更
-    if (timeLimit === 20) {  // 簡単モード（4択）
+    if (timeLimit === 10) {  // 簡単モード（4択）
         document.getElementById('userInput').style.display = 'none';  // 通常の入力フィールドを非表示
         document.querySelector('input[type="submit"]').style.display = 'none';  // 送信ボタンを非表示
         document.getElementById('remainingPoints').parentElement.style.display = 'none';  // ポイントの表示を非表示
@@ -85,9 +85,8 @@ function chooseDifficulty() {
         title: '難易度を選んでください',
         input: 'radio',
         inputOptions: {
-            'easy': '簡単 (四択問題, 時間: 20秒)',
-            'medium': '普通 (時間: 15秒, ポイント: 1000)',
-            'hard': '難しい (時間: 10秒, ポイント: 500)'
+            'select': '四択問題 (時間: 10秒)',
+            'input': '入力問題 (時間: 15秒, ポイント: 1000)',
         },
         inputValidator: (value) => {
             if (!value) {
@@ -97,16 +96,12 @@ function chooseDifficulty() {
     }).then((result) => {
         if (result.isConfirmed) {
             switch (result.value) {
-                case 'easy':
-                    timeLimit = 20;
+                case 'select':
+                    timeLimit = 10;
                     break;
-                case 'medium':
+                case 'input':
                     timeLimit = 15;
                     remainingPoints = 1000;
-                    break;
-                case 'hard':
-                    timeLimit = 10;
-                    remainingPoints = 500;
                     break;
             }
             resetGame();  // ゲームの初期化と開始
