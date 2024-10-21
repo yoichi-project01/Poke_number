@@ -112,7 +112,6 @@ function chooseDifficulty() {
 
 // 4択の選択肢ボタンを生成する関数
 function displayMultipleChoiceOptions(correctNumber, pokemonData) {
-    correctAnswers4 = 10
     // まず既存の選択肢を削除
     const form = document.getElementById('pokemonForm');
     const existingButtons = document.querySelectorAll('.choice-button');
@@ -152,28 +151,33 @@ function checkMultipleChoiceAnswer(selectedNumber, correctNumber) {
     const resultMessage = document.getElementById('resultMessage');
 
     if (selectedNumber === correctNumber) {
-        resultMessage.innerText = '正解！ 50ポイント追加！';
+        resultMessage.innerText = '正解！';
         resultMessage.style.color = 'green';
+        // 次の問題に進む
+        setTimeout(function() {
+            loadPokemonData().then(pokemonData => {
+                displayRandomPokemon(pokemonData);
+            });
+        }, 2000);
         correctAnswers++;  // 正解数をカウント
     } else {
         resultMessage.innerText = `不正解… 正解は${correctNumber}番！`;
         resultMessage.style.color = 'red';
-        correctAnswers++;
-        correctAnswers4--;
         //答えることができなくなったら
-        if (correctAnswers4 == 0) {
+        if (correctAnswers4 >= 10) {
             endGame(); //ゲームオーバー処理
         }
+        // 次の問題に進む
+        setTimeout(function() {
+            loadPokemonData().then(pokemonData => {
+                displayRandomPokemon(pokemonData);
+            });
+        }, 2000);
+        correctAnswers++;
+        correctAnswers4++;
     }
 
-    document.getElementById('remainingPoints').innerText = remainingPoints;
-
-    // 次の問題に進む
-    setTimeout(function() {
-        loadPokemonData().then(pokemonData => {
-            displayRandomPokemon(pokemonData);
-        });
-    }, 2000);
+    document.getElementById('result').innerText = correctAnswers;
 }
 
 
