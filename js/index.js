@@ -2,7 +2,8 @@ let selectedPokemonNumber = null;  // 選ばれたポケモンの番号を保持
 let remainingPoints = null;  // 初期ポイント
 let timeLimit = 15;  // 制限時間（秒）
 let timer;  // タイマーを格納する変数
-let correctAnswers = 0;  // 正解した問題数をカウント
+let correctAnswers = 0;  // 耐えた問題数をカウント
+let correctAnswers4 = 0;  //答えることのできる問題数をカウント
 
 // 右クリックを無効化
 document.addEventListener('contextmenu', function(e) {
@@ -111,6 +112,7 @@ function chooseDifficulty() {
 
 // 4択の選択肢ボタンを生成する関数
 function displayMultipleChoiceOptions(correctNumber, pokemonData) {
+    correctAnswers4 = 10
     // まず既存の選択肢を削除
     const form = document.getElementById('pokemonForm');
     const existingButtons = document.querySelectorAll('.choice-button');
@@ -120,7 +122,7 @@ function displayMultipleChoiceOptions(correctNumber, pokemonData) {
     let options = [correctNumber];
     while (options.length < 4) {
         // 正解番号の±15の範囲でランダムな番号を生成
-        const randomOffset = Math.floor(Math.random() * 31) - 15;  // -15～15の範囲の乱数
+        const randomOffset = Math.floor(Math.random() * 31) - 15;  // -15～+15の範囲の乱数
         const randomNumber = correctNumber + randomOffset;
 
         // 番号がポケモンの範囲外にならないようにチェックし、重複を避ける
@@ -152,11 +154,16 @@ function checkMultipleChoiceAnswer(selectedNumber, correctNumber) {
     if (selectedNumber === correctNumber) {
         resultMessage.innerText = '正解！ 50ポイント追加！';
         resultMessage.style.color = 'green';
-        remainingPoints += 50;
         correctAnswers++;  // 正解数をカウント
     } else {
         resultMessage.innerText = `不正解… 正解は${correctNumber}番！`;
         resultMessage.style.color = 'red';
+        correctAnswers++;
+        correctAnswers4--;
+        //答えることができなくなったら
+        if (correctAnswers4 == 0) {
+            endGame(); //ゲームオーバー処理
+        }
     }
 
     document.getElementById('remainingPoints').innerText = remainingPoints;
@@ -173,7 +180,8 @@ function checkMultipleChoiceAnswer(selectedNumber, correctNumber) {
 
 // ゲームをリセットする関数
 function resetGame() {
-    correctAnswers = 0;  // 正解数を初期化
+    correctAnswers = 0;  // 耐えた数を初期化
+    correctAnswers4 = 0;  //正解した数を初期化
     document.getElementById('remainingPoints').innerText = remainingPoints;  // ポイント表示をリセット
     document.getElementById('resultMessage').innerText = '';  // ゲームオーバーメッセージを消す
     document.getElementById('userInput').disabled = false;  // 入力欄を有効化
