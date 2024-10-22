@@ -163,6 +163,8 @@ function checkMultipleChoiceAnswer(selectedNumber, correctNumber) {
     } else {
         resultMessage.innerText = `不正解… 正解は${correctNumber}番！`;
         resultMessage.style.color = 'red';
+        correctAnswers4++;
+        document.getElementById('wrongAnswersCount').innerText = correctAnswers4;
         //答えることができなくなったら
         if (correctAnswers4 >= 10) {
             endGame(); //ゲームオーバー処理
@@ -174,7 +176,6 @@ function checkMultipleChoiceAnswer(selectedNumber, correctNumber) {
             });
         }, 2000);
         correctAnswers++;
-        correctAnswers4++;
     }
 
     document.getElementById('result').innerText = correctAnswers;
@@ -222,6 +223,7 @@ function checkAnswer(event) {
         remainingPoints += 50;  // 正解時に50ポイント追加
         // ポイント表示を更新
         document.getElementById('remainingPoints').innerText = remainingPoints;
+        document.getElementById('result').innerText = correctAnswers;
         // 次のポケモンに自動で進む（2秒後）
         setTimeout(function() {
             loadPokemonData().then(pokemonData => {
@@ -232,10 +234,13 @@ function checkAnswer(event) {
     } else {
         resultMessage.innerText = `不正解… 正解は${selectedPokemonNumber}番！`;
         resultMessage.style.color = 'red';
+        correctAnswers4++;  //間違えた問題数をカウント
+
         // ポイント表示を更新
         document.getElementById('remainingPoints').innerText = remainingPoints;
+        document.getElementById('wrongAnswersCount').innerText = correctAnswers4;
         // ポイントが0になったらゲームオーバー
-        if (remainingPoints <= 0) {
+        if (remainingPoints <= 0 || correctAnswers4 >= 10) {
             endGame();  // ポイントが0になったら時間切れ時と同じ処理を実行
         } else {
             // 次のポケモンに自動で進む（2秒後）
@@ -246,6 +251,7 @@ function checkAnswer(event) {
             }, 2000);  // 2秒後に次のポケモンを表示
         }
         correctAnswers++;  // 問題数をカウント
+        document.getElementById('result').innerText = correctAnswers;
     }
     // 入力フィールドとsubmitボタンを無効化する
     document.getElementById('userInput').disabled = true;
