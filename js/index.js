@@ -6,7 +6,7 @@ let correctAnswers = 0;  // 耐えた問題数をカウント
 let correctAnswers4 = 0;  //答えることのできる問題数をカウント
 
 // 右クリックを無効化
-/*document.addEventListener('contextmenu', function(e) {
+document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
 });
     
@@ -15,7 +15,7 @@ document.addEventListener('keydown', function(e) {
     if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
         e.preventDefault();
     }
-});*/
+});
 
 // JSONファイルをfetchで読み込む
 function loadPokemonData() {
