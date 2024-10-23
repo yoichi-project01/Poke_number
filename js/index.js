@@ -6,7 +6,7 @@ let correctAnswers = 0;  // 耐えた問題数をカウント
 let correctAnswers4 = 0;  //答えることのできる問題数をカウント
 
 // 右クリックを無効化
-document.addEventListener('contextmenu', function(e) {
+/*document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
 });
     
@@ -15,7 +15,7 @@ document.addEventListener('keydown', function(e) {
     if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
         e.preventDefault();
     }
-});
+});*/
 
 // JSONファイルをfetchで読み込む
 function loadPokemonData() {
@@ -110,40 +110,37 @@ function chooseDifficulty() {
     });
 }
 
-// 4択の選択肢ボタンを生成する関数
 function displayMultipleChoiceOptions(correctNumber, pokemonData) {
-    // まず既存の選択肢を削除
     const form = document.getElementById('pokemonForm');
     const existingButtons = document.querySelectorAll('.choice-button');
-    existingButtons.forEach(button => button.remove());
+    existingButtons.forEach(button => button.remove()); // 既存のボタンを削除
 
-    // 正解を含めた4つの選択肢を用意
     let options = [correctNumber];
     while (options.length < 4) {
-        // 正解番号の±15の範囲でランダムな番号を生成
-        const randomOffset = Math.floor(Math.random() * 31) - 15;  // -15～+15の範囲の乱数
+        const randomOffset = Math.floor(Math.random() * 31) - 15;
         const randomNumber = correctNumber + randomOffset;
-
-        // 番号がポケモンの範囲外にならないようにチェックし、重複を避ける
         if (randomNumber > 0 && randomNumber <= pokemonData.length && !options.includes(randomNumber)) {
             options.push(randomNumber);
         }
     }
 
-    // 選択肢をシャッフル
-    options = options.sort(() => Math.random() - 0.5);
+    options = options.sort(() => Math.random() - 0.5); // シャッフル
 
-    // 4つの選択肢ボタンを生成
-    options.forEach(option => {
+    // 各ボタンにIDを付けてフォーム内に追加
+    options.forEach((option, index) => {
         const button = document.createElement('button');
         button.className = 'choice-button';
         button.innerText = option;
+        button.id = `choice${index + 1}`; // 各ボタンにIDを割り当てる
         button.addEventListener('click', () => {
             checkMultipleChoiceAnswer(option, correctNumber);
         });
         form.appendChild(button);
     });
 }
+
+
+
 
 // 4択問題の回答をチェックする関数
 function checkMultipleChoiceAnswer(selectedNumber, correctNumber) {

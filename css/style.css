@@ -31,19 +31,52 @@ img {
     color: #333;
 }
 
-/* ボタンのスタイル */
+/* 親要素をグリッドコンテナに設定 */
+#pokemonForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px; /* ボタン同士の隙間 */
+    width: 100%; /* フォームの横幅を100%に設定 */
+    height: 400px; /* 必要に応じて高さを調整 */
+    position: relative;
+}
+
+/* 4択ボタンの共通スタイル */
 .choice-button {
     background-color: #ffcc00;
     border: none;
     border-radius: 25px;
     padding: 10px 20px;
-    margin: 10px;
     font-size: 18px;
     font-weight: bold;
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    width: 100%; /* グリッド内でボタンを伸ばす */
+    height: 100%;
+}
+
+/* 各ボタンの位置 */
+#choice1 {
+    grid-column: 1 / 2; /* 左上 */
+    grid-row: 1 / 2;
+}
+
+#choice2 {
+    grid-column: 2 / 3; /* 右上 */
+    grid-row: 1 / 2;
+}
+
+#choice3 {
+    grid-column: 1 / 2; /* 左下 */
+    grid-row: 2 / 3;
+}
+
+#choice4 {
+    grid-column: 2 / 3; /* 右下 */
+    grid-row: 2 / 3;
 }
 
 /* ホバー時のボタンの効果 */
