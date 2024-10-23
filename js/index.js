@@ -268,7 +268,7 @@ function endGame() {
     // アラートで結果を表示
     Swal.fire({
         title: 'ゲームオーバー！',
-        text: `あなたは${correctAnswers}問耐えた！`,
+        text: `あなたは${correctAnswers}問答えることができた！`,
         icon: 'error',
         confirmButtonText: 'リトライ',
         allowOutsideClick: false  // アラート外をクリックしても閉じないように設定
