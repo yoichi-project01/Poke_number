@@ -11,25 +11,29 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <h1>ポケモン番号クイズ</h1>
-    <div id="pokemonInfo">
-        <h2 id="pokemonName"></h2>   <!-- ポケモンの名前 -->
-        <img src="" alt="ポケモン画像" id="pokemonImage" width="200">
-    </div>
-    
-    <!-- フォームの追加 -->
-    <form id="pokemonForm">
-        <p>このポケモンの番号は？</p>
-        <input type="number" class="no-spin" id="userInput" max="1025" min="1" required>  <!-- inputタグで番号入力欄を作成（文字だけ入力1～1025） -->
-        <input type="submit" value="チェック" disabled>   <!--inputタグでsubmitボタンを作成 -->
-        <p id="resultMessage"></p>  <!-- 結果を表示する場所 -->
-    </form>
+    <div class="container">
+        <h1>ポケモン番号クイズ</h1>
 
-    <div>
-        <h3>残りポイント:<span id="remainingPoints">1000</span></h3> <!--残りポイント-->
-        <h3>残り時間: <span id="timeLeft">15</span>秒</h3> <!--残り時間-->
-        <h3>答えた問題数: <span id="result">0</span>問</h3> <!--答えることができた問題数-->
-        <h3>間違えた問題数: <span id="wrongAnswersCount">0</span>問</h3>  <!--間違えた問題数-->
+        <div id="pokemonInfo">
+            <h2 id="pokemonName"></h2>   <!-- ポケモンの名前 -->
+            <img src="" alt="ポケモン画像" id="pokemonImage">
+        </div>
+
+        <!-- フォームの追加 -->
+        <form id="pokemonForm">
+            <p>このポケモンの番号は？</p>
+            <input type="number" id="userInput" max="1025" min="1" required>
+            <input type="submit" value="チェック" id="submitBtn">
+            <div id="choices"></div> <!-- 4択用のボタンを表示 -->
+        </form>
+
+        <div class="game-status">
+            <h3>残りポイント: <span id="remainingPoints">1000</span></h3>
+            <h3>残り時間: <span id="timeLeft">15</span>秒</h3>
+            <h3>答えた問題数: <span id="result">0</span>問</h3>
+            <h3>間違えた問題数: <span id="wrongAnswersCount">0</span>問</h3>
+        </div>
+        <p id="resultMessage"></p>  <!-- 結果を表示する場所 -->
     </div>
 
     <script src="../js/index.js"></script>

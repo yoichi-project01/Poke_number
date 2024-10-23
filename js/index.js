@@ -111,9 +111,8 @@ function chooseDifficulty() {
 }
 
 function displayMultipleChoiceOptions(correctNumber, pokemonData) {
-    const form = document.getElementById('pokemonForm');
-    const existingButtons = document.querySelectorAll('.choice-button');
-    existingButtons.forEach(button => button.remove()); // 既存のボタンを削除
+    const choicesContainer = document.getElementById('choices');
+    choicesContainer.innerHTML = ''; // 既存のボタンをクリア
 
     let options = [correctNumber];
     while (options.length < 4) {
@@ -126,19 +125,24 @@ function displayMultipleChoiceOptions(correctNumber, pokemonData) {
 
     options = options.sort(() => Math.random() - 0.5); // シャッフル
 
-    // 各ボタンにIDを付けてフォーム内に追加
-    options.forEach((option, index) => {
+    options.forEach(option => {
         const button = document.createElement('button');
         button.className = 'choice-button';
         button.innerText = option;
-        button.id = `choice${index + 1}`; // 各ボタンにIDを割り当てる
+
+        // ボタンがクリックされたときの処理
         button.addEventListener('click', () => {
+            // 全てのボタンを無効化
+            const allButtons = document.querySelectorAll('.choice-button');
+            allButtons.forEach(btn => btn.disabled = true); // クリック後に全てのボタンを無効化
+
+            // 正誤判定
             checkMultipleChoiceAnswer(option, correctNumber);
         });
-        form.appendChild(button);
+
+        choicesContainer.appendChild(button);
     });
 }
-
 
 
 
