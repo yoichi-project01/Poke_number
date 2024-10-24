@@ -262,7 +262,6 @@ function checkAnswer(event) {
 // ゲームオーバー処理
 function endGame() {
     clearInterval(timer);  // タイマーをクリア
-    document.getElementById('resultMessage').innerText = 'ゲームオーバー！';
     document.getElementById('userInput').disabled = true;  // 入力欄を無効化
 
     // アラートで結果を表示
