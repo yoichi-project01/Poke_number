@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ポケモン図鑑当てゲーム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2の読み込み -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .content {
+            position: relative;
+            padding: 20px;
+            width: 100%;
+            max-width: 480px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin: 0 10px;
+        }
+
+        h1 {
+            color: #f48024;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .game-container, .mode-selection, .game-type-selection {
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .pokemon-image {
+            width: 100%;
+            max-width: 150px;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        .btn-primary, .btn-secondary, .btn-success, .btn-info {
+            background-color: #42a5f5;
+            border: none;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            transition: all 0.3s ease;
+            padding: 10px;
+        }
+
+        .btn-primary:hover, .btn-secondary:hover, .btn-success:hover, .btn-info:hover {
+            background-color: #1e88e5;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .message, .remaining-count {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .message {
+            color: #e53935;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .remaining-count {
+            color: #f48024;
+        }
+
+        .correct {
+            color: #43a047;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .pokemon-image {
+                max-width: 100px;
+            }
+
+            .btn-primary, .btn-secondary, .btn-success, .btn-info {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .game-container, .mode-selection, .game-type-selection {
+                padding: 10px;
+            }
+
+            .message, .remaining-count {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>ポケモン図鑑当てゲーム</h1>
+
+        <div class="mode-selection">
+            <h2 class="fs-5">モードを選択してください</h2>
+            <button onclick="selectMode('multipleChoice')" class="btn btn-primary w-100 mt-3">4択問題</button>
+            <button onclick="selectMode('input')" class="btn btn-secondary w-100 mt-3">入力問題</button>
+        </div>
+
+        <div class="game-type-selection" style="display: none;">
+            <h2 class="fs-5">ゲームタイプを選択してください</h2>
+            <button onclick="startGame('endless')" class="btn btn-primary w-100 mt-3">エンドレスモード</button>
+            <button onclick="startGame('limited')" class="btn btn-secondary w-100 mt-3">リミテッドモード</button>
+        </div>
+
+        <div class="game-container" style="display: none;">
+            <div class="pokemon-card">
+                <p id="pokemon-name" class="fs-4">？？？</p>
+                <img id="pokemon-image" class="pokemon-image img-fluid" src="" alt="ポケモン画像">
+            </div>
+            <div id="input-mode" style="display: none;">
+                <input type="number" id="guess" class="form-control mt-3" placeholder="図鑑ナンバーを入力" min="1" max="1025">
+                <button onclick="validateAndCheckAnswer()" class="btn btn-success w-100 mt-3">送信</button>
+            </div>
+            <div id="multiple-choice-mode" style="display: none;">
+                <div id="options" class="d-flex flex-column mt-3"></div>
+            </div>
+            <p class="remaining-count fs-5" id="remaining-count" style="display: none;"></p>
+            <p class="message fs-5 mt-3" id="message"></p>
+            <button onclick="resetGame()" class="btn btn-info w-100 mt-3">別のモードを選択</button>
+        </div>
+    </div>
+
+    <script>
+        let pokemonList = []; 
+        let currentPokemon;
+        let gameMode = ""; 
+        let gameType = "";
+        let questionCount = 0;
+        let correctAnswers = 0; // 正解の問題数をカウント
+        const maxQuestions = 10; // リミテッドモードでの問題数
+
+        async function loadPokemonData() {
+            const response = await fetch('../data/pokemon_data.json');
+            const data = await response.json();
+            pokemonList = data;
+        }
+
+        function selectMode(mode) {
+            gameMode = mode;
+            document.querySelector('.mode-selection').style.display = 'none';
+            document.querySelector('.game-type-selection').style.display = 'block';
+        }
+
+        function startGame(selectedGameType) {
+            gameType = selectedGameType;
+            questionCount = 0;
+            correctAnswers = 0; // 正解数の初期化
+            document.querySelector('.game-type-selection').style.display = 'none';
+            document.querySelector('.game-container').style.display = 'block';
+
+            if (gameType === 'limited') {
+                document.getElementById("remaining-count").style.display = 'block';
+                updateRemainingCount(); // 初期の残り回数を表示
+            } else {
+                document.getElementById("remaining-count").style.display = 'none';
+            }
+
+            loadNextQuestion();
+        }
+
+        function updateRemainingCount() {
+            const remainingQuestions = maxQuestions - questionCount;
+            document.getElementById("remaining-count").textContent = `残り回答可能回数: ${remainingQuestions}回`;
+        }
+
+        function loadNextQuestion() {
+            if (gameType === 'limited' && questionCount >= maxQuestions) {
+                endGame();
+                return;
+            }
+            
+            currentPokemon = pokemonList[Math.floor(Math.random() * pokemonList.length)];
+            document.getElementById("pokemon-name").textContent = currentPokemon.名前;
+            document.getElementById("pokemon-image").src = currentPokemon.画像;
+            document.getElementById("message").textContent = '';
+
+            if (gameMode === 'input') {
+                document.getElementById("input-mode").style.display = 'block';
+                document.getElementById("multiple-choice-mode").style.display = 'none';
+                document.getElementById("guess").focus();
+            } else if (gameMode === 'multipleChoice') {
+                setupMultipleChoice();
+                document.getElementById("input-mode").style.display = 'none';
+                document.getElementById("multiple-choice-mode").style.display = 'block';
+            }
+        }
+
+        function setupMultipleChoice() {
+            const optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = ""; 
+
+            const correctNumber = currentPokemon.番号;
+            const choices = new Set([correctNumber]);
+
+            while (choices.size < 4) {
+                const randomChoice = correctNumber + Math.floor(Math.random() * 31) - 15;
+                if (randomChoice > 0 && randomChoice <= pokemonList.length) {
+                    choices.add(randomChoice);
+                }
+            }
+
+            Array.from(choices).sort(() => 0.5 - Math.random()).forEach(choice => {
+                const button = document.createElement("button");
+                button.className = "btn btn-outline-primary w-100 mt-2";
+                button.textContent = choice;
+                button.onclick = () => checkAnswer(choice);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function validateAndCheckAnswer() {
+            const guess = parseInt(document.getElementById("guess").value);
+            if (isNaN(guess) || guess < 1 || guess > 1025) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '無効な入力',
+                    text: '1から1025の範囲内で入力してください。',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+            checkAnswer(guess);
+        }
+
+        function checkAnswer(guess = null) {
+            const message = document.getElementById("message");
+            const userGuess = guess !== null ? guess : parseInt(document.getElementById("guess").value);
+
+            const buttons = document.querySelectorAll("#options button");
+            buttons.forEach(button => button.disabled = true);
+
+            if (userGuess === currentPokemon.番号) {
+                message.textContent = `正解！ ${currentPokemon.番号} 番です！次の問題に進みます...`;
+                message.className = "message correct";
+                correctAnswers++; // 正解数をカウント
+            } else {
+                message.textContent = `不正解！正解は ${currentPokemon.番号} 番です！次の問題に進みます...`;
+                message.className = "message";
+            }
+
+            questionCount++;
+            if (gameType === 'limited') {
+                updateRemainingCount(); // 回答後に残り回数を更新
+            }
+
+            setTimeout(loadNextQuestion, 3000); // 次の問題に進む
+        }
+
+        function endGame() {
+            document.querySelector('.game-container').style.display = 'none';
+            document.querySelector('.mode-selection').style.display = 'block';
+            
+            Swal.fire({
+                title: 'リミテッドモード終了！',
+                text: `お疲れ様でした！\n正解数: ${correctAnswers}/${maxQuestions}`,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }
+
+        function resetGame() {
+            document.querySelector('.mode-selection').style.display = 'block';
+            document.querySelector('.game-type-selection').style.display = 'none';
+            document.querySelector('.game-container').style.display = 'none';
+            document.getElementById("input-mode").style.display = 'none';
+            document.getElementById("multiple-choice-mode").style.display = 'none';
+            document.getElementById("remaining-count").style.display = 'none';
+        }
+
+        loadPokemonData(); 
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
