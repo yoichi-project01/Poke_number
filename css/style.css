@@ -1,111 +1,111 @@
-/* 全体のフォントと背景 */
 body {
-    font-family: 'Poppins', Arial, sans-serif;
-    text-align: center;
-    background: linear-gradient(135deg, #6DD5FA, #FFFFFF);
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f7fa;
     color: #333;
-    padding: 20px;
-    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    margin: 0;
+    overflow: hidden;
 }
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
+.content {
+    position: relative;
     padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 480px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: 0 10px;
 }
 
-/* ポケモンの画像 */
-#pokemonImage {
-    width: 250px;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+h1 {
+    color: #f48024;
+    font-size: 2rem;
+    font-weight: bold;
     margin-bottom: 20px;
 }
 
-/* フォームのスタイル */
-#pokemonForm {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
+.game-container, .mode-selection, .game-type-selection {
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-#userInput, #submitBtn {
-    padding: 10px;
-    border-radius: 25px;
-    font-size: 18px;
-    width: 200px;
-    margin-bottom: 15px;
-}
-
-#submitBtn {
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#submitBtn:hover {
-    background-color: #218838;
-}
-
-/* 4択ボタンの配置 */
-#choices {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+.pokemon-image {
     width: 100%;
-    max-width: 400px;
+    max-width: 150px;
+    height: auto;
+    margin-top: 10px;
 }
 
-.choice-button {
-    background-color: #ffcc00;
+.btn-primary, .btn-secondary, .btn-success, .btn-info {
+    background-color: #42a5f5;
     border: none;
-    border-radius: 25px;
-    padding: 10px;
-    font-size: 18px;
+    font-size: 1rem;
     font-weight: bold;
     color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 100%;
+    transition: all 0.3s ease;
+    padding: 10px;
 }
 
-.choice-button:hover {
-    background-color: #ff9900;
+.btn-primary:hover, .btn-secondary:hover, .btn-success:hover, .btn-info:hover {
+    background-color: #1e88e5;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
 }
 
-.choice-button:active {
-    background-color: #cc7a00;
-}
-
-/* ゲームステータスの表示部分 */
-.game-status {
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-    width: 100%;
-}
-
-.game-status h3 {
-    font-size: 18px;
-    color: #333;
-}
-
-/* 結果メッセージ */
-#resultMessage {
-    font-size: 20px;
+.message, .remaining-count {
+    font-size: 1rem;
     font-weight: bold;
-    margin-top: 20px;
-    color: red;
+    margin-top: 15px;
+}
+
+.message {
+    color: #e53935;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.remaining-count {
+    color: #f48024;
+}
+
+.correct {
+    color: #43a047;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.4rem;
+    }
+
+    .content {
+        padding: 15px;
+    }
+
+    .pokemon-image {
+        max-width: 100px;
+    }
+
+    .btn-primary, .btn-secondary, .btn-success, .btn-info {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .game-container, .mode-selection, .game-type-selection {
+        padding: 10px;
+    }
+
+    .message, .remaining-count {
+        font-size: 0.9rem;
+    }
 }

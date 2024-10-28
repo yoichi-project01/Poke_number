@@ -2,39 +2,48 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポケモン番号クイズ</title>
-    <link rel="icon" href="../pokemon_images/favicon.svg" sizes="any" type="image/svg+xml">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css">
-    <!-- SweetAlert2のCDNを追加 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ポケモン図鑑当てゲーム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2の読み込み -->
+    <link rel="stylesheet" href="../css/style.css" type="text/css">
 </head>
 <body>
-    <div class="container">
-        <h1>ポケモン番号クイズ</h1>
 
-        <div id="pokemonInfo">
-            <h2 id="pokemonName"></h2>   <!-- ポケモンの名前 -->
-            <img src="" alt="ポケモン画像" id="pokemonImage">
+    <div class="content">
+        <h1>ポケモン図鑑当てゲーム</h1>
+
+        <div class="mode-selection">
+            <h2 class="fs-5">モードを選択してください</h2>
+            <button onclick="selectMode('multipleChoice')" class="btn btn-primary w-100 mt-3">4択問題</button>
+            <button onclick="selectMode('input')" class="btn btn-secondary w-100 mt-3">入力問題</button>
         </div>
 
-        <!-- フォームの追加 -->
-        <form id="pokemonForm">
-            <input type="number" id="userInput" max="1025" min="1" required>
-            <input type="submit" value="チェック" id="submitBtn">
-            <div id="choices"></div> <!-- 4択用のボタンを表示 -->
-        </form>
-
-        <div class="game-status">
-            <h3>残りポイント: <span id="remainingPoints">1000</span></h3>
-            <h3>残り時間: <span id="timeLeft">15</span>秒</h3>
-            <h3>答えた問題数: <span id="result">0</span>問</h3>
-            <h3>間違えた問題数: <span id="wrongAnswersCount">0</span>問</h3>
+        <div class="game-type-selection" style="display: none;">
+            <h2 class="fs-5">ゲームタイプを選択してください</h2>
+            <button onclick="startGame('endless')" class="btn btn-primary w-100 mt-3">エンドレスモード</button>
+            <button onclick="startGame('limited')" class="btn btn-secondary w-100 mt-3">リミテッドモード</button>
         </div>
-        <p id="resultMessage"></p>  <!-- 結果を表示する場所 -->
+
+        <div class="game-container" style="display: none;">
+            <div class="pokemon-card">
+                <p id="pokemon-name" class="fs-4">？？？</p>
+                <img id="pokemon-image" class="pokemon-image img-fluid" src="" alt="ポケモン画像">
+            </div>
+            <div id="input-mode" style="display: none;">
+                <input type="number" id="guess" class="form-control mt-3" placeholder="図鑑ナンバーを入力" min="1" max="1025">
+                <button onclick="validateAndCheckAnswer()" class="btn btn-success w-100 mt-3">送信</button>
+            </div>
+            <div id="multiple-choice-mode" style="display: none;">
+                <div id="options" class="d-flex flex-column mt-3"></div>
+            </div>
+            <p class="remaining-count fs-5" id="remaining-count" style="display: none;"></p>
+            <p class="message fs-5 mt-3" id="message"></p>
+            <button onclick="resetGame()" class="btn btn-info w-100 mt-3">別のモードを選択</button>
+        </div>
     </div>
-
     <script src="../js/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
