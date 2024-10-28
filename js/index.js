@@ -3,8 +3,9 @@ let currentPokemon;
 let gameMode = ""; 
 let gameType = "";
 let questionCount = 0;
-let correctAnswers = 0; // 正解の問題数をカウント
-const maxQuestions = 10; // リミテッドモードでの問題数
+let correctAnswers = 0;
+let countdown;
+let timeLimitPerQuestion = 10; // 初期値を10秒に設定
 
 async function loadPokemonData() {
     const response = await fetch('../data/pokemon_data.json');
@@ -18,21 +19,65 @@ function selectMode(mode) {
     document.querySelector('.game-type-selection').style.display = 'block';
 }
 
-function startGame(selectedGameType) {
+function selectGameType(selectedGameType) {
     gameType = selectedGameType;
-    questionCount = 0;
-    correctAnswers = 0; // 正解数の初期化
     document.querySelector('.game-type-selection').style.display = 'none';
+    document.querySelector('.time-selection').style.display = 'block';
+}
+
+// スライダーの値をリアルタイムに表示
+function updateSliderValue(value) {
+    document.getElementById("time-display").textContent = `各問題の制限時間: ${value}秒`;
+    timeLimitPerQuestion = parseInt(value);
+}
+
+function startGameWithCustomTime() {
+    if (isNaN(timeLimitPerQuestion) || timeLimitPerQuestion < 5 || timeLimitPerQuestion > 20) {
+        Swal.fire({
+            icon: 'error',
+            title: '無効な入力',
+            text: '5秒以上20秒以内の時間を指定してください。',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+    startGame();
+}
+
+function startGame() {
+    questionCount = 0;
+    correctAnswers = 0;
+    document.querySelector('.time-selection').style.display = 'none';
     document.querySelector('.game-container').style.display = 'block';
 
     if (gameType === 'limited') {
         document.getElementById("remaining-count").style.display = 'block';
-        updateRemainingCount(); // 初期の残り回数を表示
+        updateRemainingCount();
     } else {
         document.getElementById("remaining-count").style.display = 'none';
     }
 
     loadNextQuestion();
+}
+
+function startTimer() {
+    let timeRemaining = timeLimitPerQuestion;
+    const timerElement = document.getElementById("timer");
+    timerElement.style.display = "block";
+
+    function updateTimer() {
+        timerElement.textContent = `残り時間: ${timeRemaining}秒`;
+
+        if (timeRemaining <= 0) {
+            clearInterval(countdown);
+            endGame("時間切れです！ゲーム終了");
+        } else {
+            timeRemaining -= 1;
+        }
+    }
+
+    updateTimer();
+    countdown = setInterval(updateTimer, 1000);
 }
 
 function updateRemainingCount() {
@@ -42,10 +87,14 @@ function updateRemainingCount() {
 
 function loadNextQuestion() {
     if (gameType === 'limited' && questionCount >= maxQuestions) {
-        endGame();
+        endGame("リミテッドモード終了");
         return;
     }
-    
+
+    // カウントダウンリセットして再スタート
+    clearInterval(countdown);
+    startTimer();
+
     currentPokemon = pokemonList[Math.floor(Math.random() * pokemonList.length)];
     document.getElementById("pokemon-name").textContent = currentPokemon.名前;
     document.getElementById("pokemon-image").src = currentPokemon.画像;
@@ -109,39 +158,58 @@ function checkAnswer(guess = null) {
     if (userGuess === currentPokemon.番号) {
         message.textContent = `正解！ ${currentPokemon.番号} 番です！次の問題に進みます...`;
         message.className = "message correct";
-        correctAnswers++; // 正解数をカウント
+        correctAnswers++;
+        questionCount++;
+
+        if (gameType === 'limited') {
+            updateRemainingCount();
+        }
+
+        clearInterval(countdown); // 正解した場合、カウントダウンをリセット
+        setTimeout(loadNextQuestion, 2000); // 正解の場合のみ次の問題に進む
     } else {
-        message.textContent = `不正解！正解は ${currentPokemon.番号} 番です！次の問題に進みます...`;
-        message.className = "message";
+        // エンドレスモードのみ間違えたらゲーム終了
+        if (gameType === 'endless') {
+            message.textContent = `不正解！正解は ${currentPokemon.番号} 番でした。ゲーム終了です。`;
+            message.className = "message";
+            clearInterval(countdown);
+            setTimeout(() => endGame("エンドレスモード終了"), 2000);
+        } else {
+            // リミテッドモードの場合はメッセージだけ表示して次に進む
+            message.textContent = `不正解！正解は ${currentPokemon.番号} 番でした。`;
+            message.className = "message";
+            questionCount++;
+            clearInterval(countdown);
+            setTimeout(loadNextQuestion, 2000);
+        }
     }
-
-    questionCount++;
-    if (gameType === 'limited') {
-        updateRemainingCount(); // 回答後に残り回数を更新
-    }
-
-    setTimeout(loadNextQuestion, 3000); // 次の問題に進む
 }
 
-function endGame() {
+function endGame(reason = "ゲーム終了") {
     document.querySelector('.game-container').style.display = 'none';
     document.querySelector('.mode-selection').style.display = 'block';
     
+    clearInterval(countdown);
+    document.getElementById("timer").style.display = "none";
+
     Swal.fire({
-        title: 'リミテッドモード終了！',
-        text: `お疲れ様でした！\n正解数: ${correctAnswers}/${maxQuestions}`,
-        icon: 'success',
+        title: reason,
+        text: `お疲れ様でした！\n正解数: ${correctAnswers}問`,
+        icon: 'info',
         confirmButtonText: 'OK'
     });
 }
 
 function resetGame() {
+    clearInterval(countdown);
     document.querySelector('.mode-selection').style.display = 'block';
     document.querySelector('.game-type-selection').style.display = 'none';
+    document.querySelector('.time-selection').style.display = 'none';
     document.querySelector('.game-container').style.display = 'none';
     document.getElementById("input-mode").style.display = 'none';
     document.getElementById("multiple-choice-mode").style.display = 'none';
     document.getElementById("remaining-count").style.display = 'none';
+    document.getElementById("timer").style.display = 'none';
 }
 
-loadPokemonData(); 
+loadPokemonData();

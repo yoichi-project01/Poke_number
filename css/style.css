@@ -59,7 +59,7 @@ h1 {
     transform: translateY(-2px);
 }
 
-.message, .remaining-count {
+.message, .remaining-count, .timer {
     font-size: 1rem;
     font-weight: bold;
     margin-top: 15px;
@@ -70,7 +70,7 @@ h1 {
     animation: fadeIn 0.5s ease-in-out;
 }
 
-.remaining-count {
+.remaining-count, .timer {
     color: #f48024;
 }
 
@@ -105,7 +105,7 @@ h1 {
         padding: 10px;
     }
 
-    .message, .remaining-count {
+    .message, .remaining-count, .timer {
         font-size: 0.9rem;
     }
 }
