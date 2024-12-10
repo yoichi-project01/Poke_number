@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ポケモン図鑑当てゲーム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+</head>
+<body>
+
+    <div class="content">
+        <h1>ポケモン図鑑当てゲーム</h1>
+
+        <div class="mode-selection">
+            <h2 class="fs-5">モードを選択してください</h2>
+            <button onclick="selectMode('multipleChoice')" class="btn btn-primary w-100 mt-3">4択問題</button>
+            <button onclick="selectMode('input')" class="btn btn-secondary w-100 mt-3">入力問題</button>
+        </div>
+
+        <div class="game-type-selection" style="display: none;">
+            <h2 class="fs-5">ゲームタイプを選択してください</h2>
+            <button onclick="selectGameType('endless')" class="btn btn-primary w-100 mt-3">エンドレスモード</button>
+            <button onclick="selectGameType('limited')" class="btn btn-secondary w-100 mt-3">リミテッドモード</button>
+        </div>
+
+        <div class="time-selection" style="display: none;">
+            <h2 class="fs-5">各問題の制限時間を設定してください（秒単位）</h2>
+            <input type="range" id="time-slider" class="form-range" min="5" max="20" value="10" oninput="updateSliderValue(this.value)">
+            <p id="time-display" class="mt-2">各問題の制限時間: 10秒</p>
+            <button onclick="startGameWithCustomTime()" class="btn btn-success w-100 mt-3">ゲーム開始</button>
+        </div>
+
+        <div class="game-container" style="display: none;">
+            <div class="pokemon-card">
+                <p id="pokemon-name" class="fs-4">？？？</p>
+                <img id="pokemon-image" class="pokemon-image img-fluid" src="" alt="ポケモン画像">
+            </div>
+            <div id="input-mode" style="display: none;">
+                <input type="number" id="guess" class="form-control mt-3" placeholder="図鑑ナンバーを入力" min="1" max="1025">
+                <button onclick="validateAndCheckAnswer()" class="btn btn-success w-100 mt-3">送信</button>
+            </div>
+            <div id="multiple-choice-mode" style="display: none;">
+                <div id="options" class="d-flex flex-column mt-3"></div>
+            </div>
+            <p class="remaining-count fs-5" id="remaining-count" style="display: none;"></p>
+            <p class="timer fs-5" id="timer" style="display: none;">残り時間: 10秒</p>
+            <p class="message fs-5 mt-3" id="message"></p>
+            <button onclick="resetGame()" class="btn btn-info w-100 mt-3">別のモードを選択</button>
+        </div>
+    </div>
+
+    <script src="../js/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
