@@ -1,111 +1,124 @@
+/* グローバルなスタイル設定 */
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f5f7fa;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    overflow: hidden;
+    font-family: 'Roboto', sans-serif; /* フォント設定 */
+    background-color: #f5f7fa; /* 背景色 */
+    color: #333; /* 文字色 */
+    display: flex; /* 中央配置のためのフレックスボックス */
+    justify-content: center; /* 水平方向の中央配置 */
+    align-items: center; /* 垂直方向の中央配置 */
+    min-height: 100vh; /* ビューポートの高さ全体を確保 */
+    margin: 0; /* ページ全体の余白をリセット */
+    overflow: hidden; /* ページのスクロールを無効化 */
 }
 
+/* ゲーム全体のコンテナスタイル */
 .content {
-    position: relative;
-    padding: 20px;
-    width: 100%;
-    max-width: 480px;
-    background-color: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    margin: 0 10px;
+    position: relative; /* 要素の位置設定 */
+    padding: 20px; /* 内側余白 */
+    width: 100%; /* 幅を全体に広げる */
+    max-width: 480px; /* 最大幅の設定 */
+    background-color: #ffffff; /* 背景色 */
+    border-radius: 15px; /* 角を丸くする */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* ボックスに影を付ける */
+    text-align: center; /* テキストの中央寄せ */
+    margin: 0 10px; /* 横方向の余白 */
 }
 
+/* タイトルスタイル */
 h1 {
-    color: #f48024;
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 20px;
+    color: #f48024; /* タイトルの色 */
+    font-size: 2rem; /* フォントサイズ */
+    font-weight: bold; /* フォントの太さ */
+    margin-bottom: 20px; /* 下余白 */
 }
 
+/* ゲーム、モード選択、ゲームタイプ選択の共通スタイル */
 .game-container, .mode-selection, .game-type-selection {
-    padding: 15px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px; /* 内側余白 */
+    background-color: #ffffff; /* 背景色 */
+    border-radius: 12px; /* 角を丸くする */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* ボックスに影を付ける */
 }
 
+/* ポケモン画像のスタイル */
 .pokemon-image {
-    width: 100%;
-    max-width: 150px;
-    height: auto;
-    margin-top: 10px;
+    width: 100%; /* 幅を全体に広げる */
+    max-width: 150px; /* 最大幅を設定 */
+    height: auto; /* アスペクト比を維持 */
+    margin-top: 10px; /* 上方向の余白 */
 }
 
+/* ボタンのスタイル（共通） */
 .btn-primary, .btn-secondary, .btn-success, .btn-info {
-    background-color: #42a5f5;
-    border: none;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #fff;
-    transition: all 0.3s ease;
-    padding: 10px;
+    background-color: #42a5f5; /* 背景色 */
+    border: none; /* ボーダーを削除 */
+    font-size: 1rem; /* フォントサイズ */
+    font-weight: bold; /* フォントの太さ */
+    color: #fff; /* 文字色 */
+    transition: all 0.3s ease; /* ホバー時のスムーズなアニメーション */
+    padding: 10px; /* 内側余白 */
 }
 
+/* ボタンのホバー時のスタイル */
 .btn-primary:hover, .btn-secondary:hover, .btn-success:hover, .btn-info:hover {
-    background-color: #1e88e5;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
+    background-color: #1e88e5; /* ホバー時の背景色 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* ボックスに影を付ける */
+    transform: translateY(-2px); /* ホバー時の浮き上がり効果 */
 }
 
+/* メッセージ、残り回数、タイマーのスタイル */
 .message, .remaining-count, .timer {
-    font-size: 1rem;
-    font-weight: bold;
-    margin-top: 15px;
+    font-size: 1rem; /* フォントサイズ */
+    font-weight: bold; /* フォントの太さ */
+    margin-top: 15px; /* 上方向の余白 */
 }
 
+/* メッセージのスタイル（エラー用） */
 .message {
-    color: #e53935;
-    animation: fadeIn 0.5s ease-in-out;
+    color: #e53935; /* エラーメッセージの色 */
+    animation: fadeIn 0.5s ease-in-out; /* フェードインアニメーション */
 }
 
+/* 残り回数とタイマーの色 */
 .remaining-count, .timer {
-    color: #f48024;
+    color: #f48024; /* 強調色 */
 }
 
+/* 正解時のメッセージ色 */
 .correct {
-    color: #43a047;
+    color: #43a047; /* 正解時の緑色 */
 }
 
+/* フェードインのアニメーション効果 */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; } /* 開始時の透明度 */
+    to { opacity: 1; } /* 終了時の透明度 */
 }
 
+/* モバイル画面対応のメディアクエリ */
 @media (max-width: 480px) {
     h1 {
-        font-size: 1.4rem;
+        font-size: 1.4rem; /* タイトルフォントを小さくする */
     }
 
     .content {
-        padding: 15px;
+        padding: 15px; /* 内側余白を狭める */
     }
 
     .pokemon-image {
-        max-width: 100px;
+        max-width: 100px; /* ポケモン画像の最大幅を縮小 */
     }
 
     .btn-primary, .btn-secondary, .btn-success, .btn-info {
-        font-size: 0.9rem;
-        padding: 8px;
+        font-size: 0.9rem; /* ボタンのフォントサイズを縮小 */
+        padding: 8px; /* ボタンの内側余白を縮小 */
     }
 
     .game-container, .mode-selection, .game-type-selection {
-        padding: 10px;
+        padding: 10px; /* 全体の内側余白を狭める */
     }
 
     .message, .remaining-count, .timer {
-        font-size: 0.9rem;
+        font-size: 0.9rem; /* メッセージやタイマーのフォントサイズを縮小 */
     }
 }
